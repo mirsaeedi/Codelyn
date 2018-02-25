@@ -69,11 +69,6 @@ namespace Codelyn.Test
             VerifyCSharpFix(test, fixtest);
         }
 
-        protected override CodeFixProvider GetCSharpCodeFixProvider()
-        {
-            return new CodelynCodeFixProvider();
-        }
-
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new CodelynAnalyzer();
