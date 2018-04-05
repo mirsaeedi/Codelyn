@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Codelyn.Console.TryCatchFinallyAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
@@ -11,22 +12,17 @@ namespace Codelyn.Console
 {
     public class TryStatementSyntaxWalker : CSharpSyntaxWalker
     {
-        private AnalyzeContext _context;
-        private Action<TryStatementSyntax, AnalyzeContext> _action;
+        private TryAnalyzer _tryAnalyzer;
 
-        public TryStatementSyntaxWalker(AnalyzeContext context, Action<TryStatementSyntax,AnalyzeContext> action)
+        public TryStatementSyntaxWalker(TryAnalyzer tryAnalyzer)
         {
-            _context = context;
-            _action = action;
+            _tryAnalyzer = tryAnalyzer;
         }
 
         public override void VisitTryStatement(TryStatementSyntax node)
         {
-            _action(node,_context);
+            _tryAnalyzer.AnalyzeTryStatements(node);
             base.VisitTryStatement(node);
         }
-
-
-
     }
 }

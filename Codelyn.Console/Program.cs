@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.MSBuild;
-using MongoDB.Driver;
+
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,15 +15,13 @@ namespace Codelyn
 {
     class Program
     {
-        static void Main(string[] args)
+        static  void Main(string[] args)
         {
-            string solutionPath = @"C:\Users\Ehsan Mirsaeedi\Downloads\Compressed\nopCommerce-develop\nopCommerce-develop\src\NopCommerce.sln";
-            var outputPath = @"C:\Users\Ehsan Mirsaeedi\Desktop\nopcommerce.txt";
+            string solutionPath = @"E:\Developing\WebApplication3\WebApplication3.sln";
 
             var analyzerManager = new AnalyzerManager(solutionPath);
-            var tryCatchStatements = analyzerManager.Analyze();
+            var tryCatchStatements = analyzerManager.Analyze().Result;
 
-            Save(tryCatchStatements, outputPath);
         }
 
         private static void Save(List<AnalyzeContext> tryCatchStatements, string outputPath)

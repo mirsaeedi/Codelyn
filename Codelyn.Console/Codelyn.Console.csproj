@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Codelyn.Console</RootNamespace>
     <AssemblyName>Codelyn.Console</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -33,9 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DnsClient, Version=1.0.7.0, Culture=neutral, PublicKeyToken=4574bb5573c51424, processorArchitecture=MSIL">
-      <HintPath>..\packages\DnsClient.1.0.7\lib\net45\DnsClient.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=2.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Common.2.6.1\lib\netstandard1.3\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
@@ -56,15 +53,6 @@
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.Workspaces.Desktop, Version=2.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Workspaces.Common.2.6.1\lib\net46\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
-    </Reference>
-    <Reference Include="MongoDB.Bson, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Bson.2.5.0\lib\net45\MongoDB.Bson.dll</HintPath>
-    </Reference>
-    <Reference Include="MongoDB.Driver, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.2.5.0\lib\net45\MongoDB.Driver.dll</HintPath>
-    </Reference>
-    <Reference Include="MongoDB.Driver.Core, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MongoDB.Driver.Core.2.5.0\lib\net45\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -163,9 +151,6 @@
     <Reference Include="System.Threading.Thread, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Thread.4.3.0\lib\net46\System.Threading.Thread.dll</HintPath>
     </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -186,12 +171,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnalyzeContext.cs" />
-    <Compile Include="AnalyzerManager.cs" />
-    <Compile Include="CatchClause.cs" />
-    <Compile Include="CatchClauseSyntaxWalker.cs" />
-    <Compile Include="FinallyClause.cs" />
-    <Compile Include="ModelContext.cs" />
+    <Compile Include="Core\AnalyzeContext.cs" />
+    <Compile Include="Core\AnalyzerManager.cs" />
+    <Compile Include="EFAnalysis\EFSyntaxWalker.cs" />
+    <Compile Include="EFAnalysis\EFAnalyzer.cs" />
+    <Compile Include="TryCatchFinallyAnalysis\CatchClause.cs" />
+    <Compile Include="TryCatchFinallyAnalysis\CatchClauseSyntaxWalker.cs" />
+    <Compile Include="TryCatchFinallyAnalysis\FinallyClause.cs" />
+    <Compile Include="Core\ModelContext.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxNodeAnalyzers\CatchClauseAnalyzers\CatchClauseComments.cs" />
@@ -199,9 +186,10 @@
     <Compile Include="SyntaxNodeAnalyzers\CatchClauseAnalyzers\CatchClauseGeneralExceptionAnalyzer.cs" />
     <Compile Include="SyntaxNodeAnalyzers\CatchClauseAnalyzers\CatchClauseLosingStackTraceThrows.cs" />
     <Compile Include="SyntaxNodeAnalyzers\CatchClauseAnalyzers\CatchClauseNoDeclaration.cs" />
-    <Compile Include="SyntaxNodeAnalyzers\RuleViolation.cs" />
-    <Compile Include="SyntaxNodeAnalyzers\SyntaxNodeAnalyzer.cs" />
-    <Compile Include="TryStatement.cs" />
+    <Compile Include="Core\RuleViolation.cs" />
+    <Compile Include="Core\SyntaxNodeAnalyzer.cs" />
+    <Compile Include="TryCatchFinallyAnalysis\TryAnalyzer.cs" />
+    <Compile Include="TryCatchFinallyAnalysis\TryStatement.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -211,5 +199,6 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

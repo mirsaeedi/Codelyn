@@ -1,65 +1,33 @@
-﻿using Codelyn.Console;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.MSBuild;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Codelyn
+namespace Codelyn.Console.TryCatchFinallyAnalysis
 {
-    internal class AnalyzerManager
+    public class TryAnalyzer
     {
-        private string _solutionPath
         public List<RuleViolation> RuleViolations { get; set; } = new List<RuleViolation>();
         public List<AnalyzeContext> AnalyzedContexts { get; set; } = new List<AnalyzeContext>();
 
-        public AnalyzerManager(string solutionPath)
+        public Project Project { get; }
+        public Document Document { get; }
+        public SemanticModel DocumentSemanticModel { get; }
+        public TryAnalyzer(Project project,
+            Document document)
         {
-            _solutionPath = solutionPath;
+            Project = project;
+            Document = document;
+            DocumentSemanticModel = document.GetSemanticModelAsync().Result;
         }
-
-        internal List<AnalyzeContext> Analyze()
+        public AnalyzeContext AnalyzeTryStatements(TryStatementSyntax tryStatementSyntax)
         {
-            var msWorkspace = MSBuildWorkspace.Create();
-
-            var solution = msWorkspace.OpenSolutionAsync(_solutionPath).Result;
-
-            foreach (var project in solution.Projects)
-            {
-                AnalyzeProject(project);
-            }
-
-            return AnalyzedContexts;
-        }
-
-        private void AnalyzeProject(Project project)
-        {
-            foreach (var document in project.Documents)
-            {
-                AnalyzeDocument(project, document);
-            }
-        }
-
-        private void AnalyzeDocument(Project project, Document document)
-        {
-
-            var tree = document.GetSyntaxTreeAsync().Result;
-
-            if (tree.GetRoot().Language != "C#")
-                return;
-
-            var analyzeContext = new AnalyzeContext(project, document);
-            var walker = new TryStatementSyntaxWalker(analyzeContext, AnalyzeTryStatements);
-            walker.Visit((CompilationUnitSyntax)tree.GetRoot());
-        }
-
-        private void AnalyzeTryStatements(TryStatementSyntax tryStatementSyntax, AnalyzeContext context)
-        {
-
-            var tryContext = new AnalyzeContext(context.Project,context.Document);
-            AnalyzedContexts.Add(tryContext);
+            var tryContext = new AnalyzeContext(Project, Document);
+            
             var tryStatement = new TryStatement();
             tryContext.TryStatementSyntaxNode = tryStatementSyntax;
             tryContext.TryStatement = tryStatement;
@@ -70,12 +38,15 @@ namespace Codelyn
 
             tryStatement.CatchClauses = AnalyzeCatchClauses(tryStatementSyntax, tryContext);
             tryStatement.FinallyClause = AnalyzeFinallyClause(tryStatementSyntax, tryContext);
-            RuleViolations.AddRange(tryContext.TryStatement.CatchClauses.SelectMany(c=>c.RuleViolations));
 
+            RuleViolations.AddRange(tryContext.TryStatement.CatchClauses.SelectMany(c => c.RuleViolations));
+            AnalyzedContexts.Add(tryContext);
+
+            return tryContext;
         }
 
-        private (ISymbol @class,ISymbol declaration) GetPlaceOfTryStatement(TryStatementSyntax tryStatementSyntax,AnalyzeContext context)
-        {   
+        private (ISymbol @class, ISymbol declaration) GetPlaceOfTryStatement(TryStatementSyntax tryStatementSyntax, AnalyzeContext context)
+        {
             SyntaxNode methodDeclarationSyntaxNode = null;
 
             var parent = tryStatementSyntax.Parent;
@@ -114,7 +85,7 @@ namespace Codelyn
                 .GetDeclaredSymbol(methodDeclarationSyntaxNode);
 
             SyntaxNode classDeclarationSyntaxNode = null;
-            
+
             parent = tryStatementSyntax.Parent;
             do
             {
@@ -135,7 +106,7 @@ namespace Codelyn
             var classSymbol = context.DocumentSemanticModel
                 .GetDeclaredSymbol(classDeclarationSyntaxNode);
 
-            return (@class:classSymbol, declaration: methodSymbol);
+            return (@class: classSymbol, declaration: methodSymbol);
         }
 
         private FinallyClause AnalyzeFinallyClause(TryStatementSyntax tryStatementSyntax, AnalyzeContext context)
@@ -147,7 +118,7 @@ namespace Codelyn
             finallyClause.StatementsCount = tryStatementSyntax.Finally.Block.Statements.Count;
 
             return finallyClause;
-            
+
         }
 
         private CatchClause[] AnalyzeCatchClauses(TryStatementSyntax tryStatementSyntax, AnalyzeContext context)
@@ -156,7 +127,7 @@ namespace Codelyn
 
             foreach (var catchClauseSyntax in tryStatementSyntax.Catches)
             {
-                var catchClause = AnalyzeCatchClause(tryStatementSyntax,catchClauseSyntax,context);
+                var catchClause = AnalyzeCatchClause(tryStatementSyntax, catchClauseSyntax, context);
                 catchClauses.Add(catchClause);
             }
 
@@ -195,7 +166,7 @@ namespace Codelyn
             || n.Identifier.ValueText.ToLower().Contains("WriteLine"));
 
 
-            catchClause.RuleViolations =  new CatchClauseComments().AnalyzeSyntaxNode(catchClauseSyntax)
+            catchClause.RuleViolations = new CatchClauseComments().AnalyzeSyntaxNode(catchClauseSyntax)
                 .Concat(new CatchClauseEmptyBody().AnalyzeSyntaxNode(catchClauseSyntax))
                 .Concat(new CatchClauseGeneralExceptionAnalyzer().AnalyzeSyntaxNode(catchClauseSyntax))
                 .Concat(new CatchClauseLosingStackTraceThrows().AnalyzeSyntaxNode(catchClauseSyntax))
