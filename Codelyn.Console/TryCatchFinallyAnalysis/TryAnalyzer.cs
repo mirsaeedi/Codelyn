@@ -29,7 +29,7 @@ namespace Codelyn.Console.TryCatchFinallyAnalysis
             var tryContext = new AnalyzeContext(Project, Document);
             
             var tryStatement = new TryStatement();
-            tryContext.TryStatementSyntaxNode = tryStatementSyntax;
+            tryContext.Node = tryStatementSyntax;
             tryContext.TryStatement = tryStatement;
 
             var (@class, declaration) = GetPlaceOfTryStatement(tryStatementSyntax, tryContext);

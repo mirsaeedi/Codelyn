@@ -54,6 +54,8 @@ namespace Codelyn
             var efAnalyzer = new EFAnalyzer(project, document);
             var walker = new EFSyntaxWalker(efAnalyzer);
             walker.Visit((CompilationUnitSyntax)tree.GetRoot());
+
+            AnalyzedContexts.AddRange(efAnalyzer.AnalyzedContexts.Where(q=>q.RuleViolations.Count>0)); ;
         }
     }
 }

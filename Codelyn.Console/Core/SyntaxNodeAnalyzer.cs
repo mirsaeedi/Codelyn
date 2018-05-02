@@ -8,9 +8,9 @@ using System.Text;
 
 namespace Codelyn
 {
-    internal abstract class SyntaxNodeAnalyzer
+    internal abstract class SyntaxNodeAnalyzer<T> where T:SyntaxNode
     {
         protected virtual string RuleName => GetType().Name;
-        internal abstract IEnumerable<RuleViolation> AnalyzeSyntaxNode(CatchClauseSyntax catchClauseSyntax);
+        internal abstract IEnumerable<RuleViolation> AnalyzeSyntaxNode(T node);
     }
 }

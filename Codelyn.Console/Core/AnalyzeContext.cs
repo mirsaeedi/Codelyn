@@ -16,7 +16,7 @@ namespace Codelyn
         }
 
 
-        public SyntaxNode TryStatementSyntaxNode { get; set; }
+        public SyntaxNode Node { get; set; }
         public Project Project { get; }
         public Document Document { get; }
         public ISymbol Declaration { get; set; }

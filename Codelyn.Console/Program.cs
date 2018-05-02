@@ -17,30 +17,19 @@ namespace Codelyn
     {
         static  void Main(string[] args)
         {
-            string solutionPath = @"E:\Developing\WebApplication3\WebApplication3.sln";
+            string solutionPath = @"C:\Users\Ehsan Mirsaeedi\Downloads\Compressed\MusicStore-dev\MusicStore-dev\MusicStore.sln";
 
             var analyzerManager = new AnalyzerManager(solutionPath);
-            var tryCatchStatements = analyzerManager.Analyze().Result;
+            var contexts = analyzerManager.Analyze().Result;
+            Save(contexts, @"C:\Users\Ehsan Mirsaeedi\Desktop\contoso.txt");
 
         }
 
-        private static void Save(List<AnalyzeContext> tryCatchStatements, string outputPath)
+        private static void Save(List<AnalyzeContext> contexts, string outputPath)
         {
-            var tryCatchStatementModels = tryCatchStatements.Select(c => new {
-                ClassName = c.Class.OriginalDefinition.Name,
-                MethodName = c.Declaration.OriginalDefinition.Name,
-                FileName = c.Document.Name,
-                ProjectName = c.Project.Name,
-                TryStatement = new
-                {
-                    c.TryStatement.CatchClauses,
-                    c.TryStatement.FinallyClause,
-                    c.TryStatement.HasFinally
-                }
+            var violations = contexts.SelectMany(q => q.RuleViolations).ToArray();
 
-            });
-
-            string output = JsonConvert.SerializeObject(tryCatchStatementModels);
+            string output = JsonConvert.SerializeObject(violations);
             File.WriteAllText(outputPath, output);
         }
     }

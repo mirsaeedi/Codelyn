@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Codelyn
 {
-    internal class CatchClauseComments : SyntaxNodeAnalyzer
+    internal class CatchClauseComments : SyntaxNodeAnalyzer<CatchClauseSyntax>
     {
         internal override IEnumerable<RuleViolation> AnalyzeSyntaxNode(CatchClauseSyntax catchClauseSyntax)
         {

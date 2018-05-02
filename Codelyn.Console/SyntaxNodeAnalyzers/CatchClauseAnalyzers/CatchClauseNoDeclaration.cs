@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Codelyn
 {
-    internal class CatchClauseNoDeclaration : SyntaxNodeAnalyzer
+    internal class CatchClauseNoDeclaration : SyntaxNodeAnalyzer<CatchClauseSyntax>
     {
         internal override IEnumerable<RuleViolation> AnalyzeSyntaxNode(CatchClauseSyntax catchClauseSyntax)
         {

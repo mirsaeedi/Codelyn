@@ -173,6 +173,14 @@
   <ItemGroup>
     <Compile Include="Core\AnalyzeContext.cs" />
     <Compile Include="Core\AnalyzerManager.cs" />
+    <Compile Include="EFAnalysis\DetectStaticDbContextFieldAnalyzer.cs" />
+    <Compile Include="EFAnalysis\DetectDbContextInitializationAsClassFieldAnalyzer.cs" />
+    <Compile Include="EFAnalysis\DetectDbContextCreationInsideLoop.cs" />
+    <Compile Include="EFAnalysis\DetectDbContextUsageInsideMvcControllerAnalyzer.cs" />
+    <Compile Include="EFAnalysis\DetectSaveInsideLoop.cs" />
+    <Compile Include="EFAnalysis\DetectAddRemoveInsideLoop.cs" />
+    <Compile Include="EFAnalysis\DetectDbContextCreationWithoutUsing.cs" />
+    <Compile Include="EFAnalysis\DetectSyncronousMethodCalls.cs" />
     <Compile Include="EFAnalysis\EFSyntaxWalker.cs" />
     <Compile Include="EFAnalysis\EFAnalyzer.cs" />
     <Compile Include="TryCatchFinallyAnalysis\CatchClause.cs" />
